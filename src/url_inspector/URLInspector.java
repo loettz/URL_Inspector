@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class URLInspector {
 	
-	SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss 'Uhr'");
-	String url;
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss 'Uhr'");
+	private String url;
 	
 	public String getUrl() {
 		return url;
@@ -21,40 +21,33 @@ public class URLInspector {
 		this.url = url;
 	}
 	
-	public void setUserInput(Scanner reader) {
-		//sets user input as url string if valid
-		System.out.println("Bitte geben Sie eine Url ein und best�tigen diese mit Enter: ");
-		String url = reader.next();
-		if (verifyInput(url)) {
+	void setUserInputAsUrlString(Scanner scanner) {
+		System.out.println("Bitte geben Sie eine Url ein und bestätigen diese mit Enter: ");
+		String url = scanner.next();
+		if (isValidHTML(url)) {
 			setUrl(url);
 		} else {
 			System.out.println("Achtung: Eingabe ung�ltig!");
-			setUserInput(reader);
+			setUserInputAsUrlString(scanner);
 		}
 	}
 		
-	public boolean verifyInput(String url) {
-		//checks if input is valid html site
-		if  (url.matches("^(https?|ftp)://.*$")) {
-			 return url.matches("(.*).html");		
-		} else {
-			return false;
-		}	
+	public boolean isValidHTML(String url) {
+		return url.matches("^(https?|ftp)://.*$") && url.matches("(.*).html");
 	}
 	
-	public boolean checkHttpStatusCode(String user_url) {
-		//returns true if http status code starts with 2 (success)
+	public boolean isHttpStatusCodeSuccess(String user_url) {
 		try {
 			URL url = new URL(user_url);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-			int i =  conn.getResponseCode();
-			String s = Integer.toString(i);
-			return s.startsWith("2");
+			HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+			int responseCode =  httpURLConnection.getResponseCode();
+			String responseCodeAsString = Integer.toString(responseCode);
+			return responseCodeAsString.startsWith("20");
 		} catch (MalformedURLException e) {
 			System.out.println("Warnung: Es konnte keine Url erstellt werden!");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("Warnung: Die Url konnte nicht �berpr�ft werden!");
+			System.out.println("Warnung: Die Url konnte nicht überprüft werden!");
 			e.printStackTrace();
 		}
 		return false;
@@ -72,12 +65,12 @@ public class URLInspector {
 		}			
 	}
 
-	public void checkFileExists(String file_path) {
+	void checkFileExists(String file_path) {
 		//checks if file exists and creates file if not
-		File f = new File(file_path);
-		if (!f.exists()) {
+		File file = new File(file_path);
+		if (!file.exists()) {
 			try {
-				f.createNewFile();
+				file.createNewFile();
 			} catch (IOException e) {
 				System.out.println("Warnung: Die Datei konnte nicht erstellt werden!");
 				e.printStackTrace();

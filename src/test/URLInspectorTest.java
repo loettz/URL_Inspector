@@ -12,31 +12,31 @@ public class URLInspectorTest {
 	private String url = "http://www.stadtbibliothek.luebeck.de/katalog/index.html"; 
 	private String path = "C:/temp";
 	private String file_path = path + "/"  +  "URLInspector.log";
-	URLInspector insp = new URLInspector();
+	private URLInspector urlInspector = new URLInspector();
 	
 	@Test
 	public void testUrlString() {
-		insp.setUrl(url);
-		assertEquals(insp.getUrl(), url);
+		urlInspector.setUrl(url);
+		assertEquals(urlInspector.getUrl(), url);
 	}
 	
 	@Test
 	public void testVerifyInput() {
 
-		assertTrue(insp.verifyInput(url));
-		assertFalse(insp.verifyInput("test"));
+		assertTrue(urlInspector.isValidHTML(url));
+		assertFalse(urlInspector.isValidHTML("test"));
 	}
 	
 	@Test
 	public void testCheckHttpStatusCode() {
 		
-		assertTrue(insp.checkHttpStatusCode(url));
+		assertTrue(urlInspector.isHttpStatusCodeSuccess(url));
 		
 	}
 	
 	@Test
 	public void testCheckDirectory() {
-		insp.checkDirectory(path, file_path);
+		urlInspector.checkDirectory(path, file_path);
 		File thedir = new File(path);
 		File f = new File(file_path);
 		assertTrue(thedir.isDirectory());
